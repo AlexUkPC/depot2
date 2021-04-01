@@ -1,0 +1,31 @@
+version: "3" 
+services:
+  web_depot2:
+    image: alexrogna/depot2_web:prod
+    expose:
+      - 3000
+    env_file:
+      - .env/production/database_depot2
+      - .env/production/web_depot2
+    environment:
+      - VIRTUAL_HOST=depot2.alexrogna.com
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=depot2.alexrogna.com
+    restart: always
+
+  database_depot2:
+    image: postgres
+    env_file:
+      - .env/production/database_depot2
+    volumes:
+      - db_data_depot2:/var/lib/postgresql/data
+    restart: always
+    
+  db-migrator_depot2:
+    image: alexrogna/depot2_web:prod
+    command: ["./wait-for", "--timeout=300", "database_depot2:5432", "--", "bin/rails", "db:create" , "db:migrate"]
+    env_file:
+      - .env/production/database_depot2
+      - .env/production/web_depot2
+volumes:
+  db_data_depot2:

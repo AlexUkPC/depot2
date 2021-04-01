@@ -1,0 +1,44 @@
+version: "3"
+services:
+  web_depot2:
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    ports:
+      - "3008:3000"
+    volumes: 
+      - ./depot2:/opt/app
+      - gem_cache_depot2:/gems
+    env_file: 
+      - .env/development/database_depot2
+      - .env/development/web_depot2
+    environment: 
+      - WEBPACKER_DEV_SERVER_HOST=webpack_dev_server_depot2
+  webpack_dev_server_depot2:
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    command: ./bin/webpack-dev-server
+    ports: 
+      - "3043:3043"
+    volumes: 
+      - ./depot2:/opt/app
+      - gem_cache_depot2:/gems
+    env_file: 
+      - .env/development/database_depot2
+      - .env/development/web_depot2
+    environment: 
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+  database_depot2:
+    image: postgres
+    env_file: 
+      - .env/development/database_depot2
+    volumes: 
+      - db_data_depot2:/var/lib/postgresql/data
+volumes: 
+  db_data_depot2:
+  gem_cache_depot2:
