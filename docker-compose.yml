@@ -24,7 +24,7 @@ services:
         GROUP_ID: "${GROUP_ID:-1000}"
     command: ./bin/webpack-dev-server
     ports: 
-      - "3043:3043"
+      - "4008:4008"
     volumes: 
       - ./depot2:/opt/app
       - gem_cache_depot2:/gems
